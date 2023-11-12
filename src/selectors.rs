@@ -1,34 +1,34 @@
-use crate::{disasm::disasm, opcodes::Opcode};
-use std::collections::HashMap;
+use std::collections::HashSet;
 
-pub fn selectors_from_bytecode(code_hex: &str) -> Vec<String> {
-    let bytecode = disasm(code_hex);
+use crate::{disasm::disasm, opcodes::Opcode, utils};
 
-    let mut potential_dests: HashMap<usize, &str> = HashMap::new();
-    let mut jumpdests: Vec<usize> = Vec::new();
+pub fn selectors_from_bytecode(code: &[u8]) -> Vec<String> {
+    let bytecode = disasm(code);
 
-    for inst in bytecode {
-        match inst.opcode {
-            Opcode::Push4 => {
-                let hex_value = inst.push_value.unwrap();
-                let offset = usize::from_str_radix(hex_value, 16).unwrap_or_default();
+    let mut selectors: HashSet<String> = HashSet::new();
 
-                if !potential_dests.contains_key(&offset) {
-                    potential_dests.insert(offset, hex_value);
-                }
-            }
-            Opcode::Jumpdest => {
-                jumpdests.push(inst.offset);
-            }
-            _ => {}
+    let mut i = 4usize;
+
+    while i < bytecode.len() {
+        let five_seq = &bytecode[i - 4..i + 1];
+        i += 1;
+
+        //  We're looking for a pattern that looks like:
+        //  DUP1 PUSH4 <SELECTOR> EQ PUSH2/3 <OFFSET> JUMPI
+        //  https://github.com/ethereum/solidity/blob/develop/libsolidity/codegen/ContractCompiler.cpp
+
+        if five_seq[0].opcode == Opcode::Dup1
+            && five_seq[1].opcode == Opcode::Push4
+            && five_seq[2].opcode == Opcode::Eq
+            && five_seq[3].opcode.is_value_push()
+            && five_seq[4].opcode == Opcode::Jumpi
+        {
+            let value = five_seq[1].push_value.unwrap();
+            let selector = format!("0x{}", utils::bytes_to_hex(value));
+
+            selectors.insert(selector);
         }
     }
 
-    let selectors: Vec<String> = potential_dests
-        .into_iter()
-        // .filter(|(offset, _)| jumpdests.contains(offset))
-        .map(|(_, hex_value)| format!("0x{hex_value}"))
-        .collect();
-
-    selectors
+    selectors.into_iter().collect()
 }
