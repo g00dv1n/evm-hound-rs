@@ -1,11 +1,13 @@
 use std::collections::HashSet;
 
-use crate::{disasm::disasm, opcodes::Opcode, utils};
+use crate::{disasm::disasm, opcodes::Opcode};
 
-pub fn selectors_from_bytecode(code: &[u8]) -> Vec<String> {
+pub type Selector = [u8; 4];
+
+pub fn selectors_from_bytecode(code: &[u8]) -> Vec<Selector> {
     let bytecode = disasm(code);
 
-    let mut selectors: HashSet<String> = HashSet::new();
+    let mut selectors: HashSet<Selector> = HashSet::new();
 
     let mut i = 4usize;
 
@@ -24,9 +26,10 @@ pub fn selectors_from_bytecode(code: &[u8]) -> Vec<String> {
             && five_seq[4].opcode == Opcode::Jumpi
         {
             let value = five_seq[1].push_value.unwrap();
-            let selector = format!("0x{}", utils::bytes_to_hex(value));
 
-            selectors.insert(selector);
+            if let Ok(selector) = value.try_into() {
+                selectors.insert(selector);
+            }
         }
     }
 
