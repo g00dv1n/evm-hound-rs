@@ -12,7 +12,7 @@ mod tests {
     use std::{fs::File, io::Read};
 
     fn load_bytecode_from_file() -> Vec<u8> {
-        let file_path = "data/0x7ae075546e8042dc263fa0eb6519ce0a04eabb93";
+        let file_path = "testdata/0x7ae075546e8042dc263fa0eb6519ce0a04eabb93";
         let mut file = File::open(file_path).unwrap();
 
         let mut code = Vec::new();

@@ -2,9 +2,20 @@ use crate::{disasm::disasm, opcodes::Opcode, utils};
 
 pub type Selector = [u8; 4];
 
-/// Returns all potential function selectors from the contract deployed bytecode as [u8; 4];
+/// Returns all potential function selectors from the contract deployed bytecode as `[u8; 4]`;
 /// # Arguments
 /// * `code` - A slice of bytes which represents contract bytecode
+///
+/// # Examples
+/// ```ignore
+/// use evm_hound::selectors_from_bytecode;
+/// ...
+/// let bytecode = provider.get_code(address, None).await?;
+/// let selectors = selectors_from_bytecode(&code);
+///
+/// println!("{selectors:?}");
+///
+/// ```
 pub fn selectors_from_bytecode(code: &[u8]) -> Vec<Selector> {
     let bytecode = disasm(code);
 
@@ -42,7 +53,7 @@ pub fn selectors_from_bytecode(code: &[u8]) -> Vec<Selector> {
     selectors.into_iter().collect()
 }
 
-/// Returns all potential function selectors from the contract deployed bytecode as 0x hex string
+/// Returns all potential function selectors from the contract deployed bytecode as hex `0xa9059cbb` String
 /// # Arguments
 /// * `code` - A slice of bytes which represents contract bytecode
 pub fn string_selectors_from_bytecode(code: &[u8]) -> Vec<String> {

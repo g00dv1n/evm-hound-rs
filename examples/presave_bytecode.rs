@@ -17,7 +17,7 @@ async fn main() -> Result<()> {
 
     println!("code len {}", code.len());
 
-    let file_path = format!("data/{:?}", token_addr);
+    let file_path = format!("testdata/{:?}", token_addr);
     let mut file = File::create(file_path).await?;
 
     file.write_all(&code).await?;
