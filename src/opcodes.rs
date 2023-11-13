@@ -299,7 +299,7 @@ pub enum Opcode {
 }
 
 impl Opcode {
-    /// Translates a hex string into an Opcode
+    /// Translates a raw byte into an Opcode
     pub fn from_byte(b: u8) -> Self {
         let opcode = match b {
             0x00 => Opcode::Stop,
@@ -450,6 +450,7 @@ impl Opcode {
         opcode
     }
 
+    /// Check if this is push with value (Push0 will be ignored)
     pub fn is_value_push(&self) -> bool {
         match self {
             Opcode::Push1
@@ -488,6 +489,7 @@ impl Opcode {
         }
     }
 
+    /// Returns push value size
     pub fn push_value_size(&self) -> usize {
         match self {
             Opcode::Push1 => 1,
@@ -829,14 +831,18 @@ impl Opcode {
         opcode_str.to_string()
     }
 }
-
+/// Bytecode Instruction
 #[derive(Debug, Clone)]
 pub struct Instruction<'a> {
+    /// EVM Opcode
     pub opcode: Opcode,
+    /// Instruction offset in the current code
     pub offset: usize,
+    /// Value for Push Opcodes (except for Push0)
     pub push_value: Option<&'a [u8]>,
 }
 
+/// Display Instruction Opcode and Push value (if has one)
 impl fmt::Display for Instruction<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let opcode_str = self.opcode.op_string();

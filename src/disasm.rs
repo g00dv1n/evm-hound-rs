@@ -1,5 +1,8 @@
 use crate::opcodes::{Bytecode, Instruction, Opcode};
 
+/// Returns parsed bytecode instructions
+/// # Arguments
+/// * `code` - A slice of bytes which represents contract bytecode
 pub fn disasm(code: &[u8]) -> Bytecode {
     let mut code_offset = 0;
 

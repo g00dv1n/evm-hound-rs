@@ -6,7 +6,7 @@ use ethers::{
 };
 use eyre::Result;
 
-use evm_hound::selectors_from_bytecode;
+use evm_hound::{selectors_from_bytecode, string_selectors_from_bytecode};
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -15,9 +15,11 @@ async fn main() -> Result<()> {
 
     let code = provider.get_code(token_addr, None).await?;
 
-    let func_selectors = selectors_from_bytecode(code.as_ref());
+    let raw_selectors = selectors_from_bytecode(&code);
+    let string_selectors = string_selectors_from_bytecode(&code);
 
-    println!("{func_selectors:?}");
+    println!("{raw_selectors:?}");
+    println!("{string_selectors:?}");
 
     Ok(())
 }

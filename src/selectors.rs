@@ -1,13 +1,21 @@
-use std::collections::HashSet;
-
-use crate::{disasm::disasm, opcodes::Opcode};
+use crate::{disasm::disasm, opcodes::Opcode, utils};
 
 pub type Selector = [u8; 4];
 
+/// Returns all potential function selectors from the contract deployed bytecode as [u8; 4];
+/// # Arguments
+/// * `code` - A slice of bytes which represents contract bytecode
 pub fn selectors_from_bytecode(code: &[u8]) -> Vec<Selector> {
     let bytecode = disasm(code);
 
-    let mut selectors: HashSet<Selector> = HashSet::new();
+    let mut selectors: Vec<Selector> = Vec::new();
+    let mut save_selector = |value: &[u8]| {
+        if let Ok(selector) = value.try_into() {
+            if !selectors.contains(&selector) {
+                selectors.push(selector);
+            }
+        }
+    };
 
     let mut i = 4usize;
 
@@ -17,7 +25,7 @@ pub fn selectors_from_bytecode(code: &[u8]) -> Vec<Selector> {
 
         //  We're looking for a pattern that looks like:
         //  DUP1 PUSH4 <SELECTOR> EQ PUSH2/3 <OFFSET> JUMPI
-        //  https://github.com/ethereum/solidity/blob/develop/libsolidity/codegen/ContractCompiler.cpp
+        //  https://github.com/ethereum/solidity/blob/58811f134ac369b20c2ec1120907321edf08fff1/libsolidity/codegen/ContractCompiler.cpp#L332
 
         if five_seq[0].opcode == Opcode::Dup1
             && five_seq[1].opcode == Opcode::Push4
@@ -27,11 +35,21 @@ pub fn selectors_from_bytecode(code: &[u8]) -> Vec<Selector> {
         {
             let value = five_seq[1].push_value.unwrap();
 
-            if let Ok(selector) = value.try_into() {
-                selectors.insert(selector);
-            }
+            save_selector(value);
         }
     }
 
     selectors.into_iter().collect()
+}
+
+/// Returns all potential function selectors from the contract deployed bytecode as 0x hex string
+/// # Arguments
+/// * `code` - A slice of bytes which represents contract bytecode
+pub fn string_selectors_from_bytecode(code: &[u8]) -> Vec<String> {
+    let selectors = selectors_from_bytecode(code);
+
+    selectors
+        .into_iter()
+        .map(|sb| format!("0x{}", utils::bytes_to_hex(&sb)))
+        .collect()
 }
