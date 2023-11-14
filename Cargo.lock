@@ -1011,7 +1011,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "evm-hound"
+name = "evm_hound"
 version = "0.1.0"
 dependencies = [
  "ethers",

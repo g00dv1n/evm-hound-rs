@@ -1,9 +1,18 @@
+//! ## EVM Hound
+//! A Minimalistic Rust library to extract all potential function selectors from EVM bytecode without source code.
+//!
+//! For examples and more check out [the github repo](https://github.com/g00dv1n/evm-hound-rs).
+//!
+//! ### Use cases:
+//! Made for [Hackers.tools Trading Simulator](https://hackers.tools/) to search/bruteforce for potential methods that start trading.
+
 mod disasm;
 mod opcodes;
 mod selectors;
 mod utils;
 
 pub use disasm::*;
+pub use opcodes::*;
 pub use selectors::*;
 
 #[cfg(test)]

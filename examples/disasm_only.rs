@@ -5,11 +5,11 @@ use ethers::{
     types::Address,
 };
 use eyre::Result;
-use tokio::fs::File;
-use tokio::io::AsyncWriteExt;
+
+use evm_hound::disasm;
 
 // To Try:
-// cargo run --example presave_bytecode
+// cargo run --example disasm_only
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -18,12 +18,12 @@ async fn main() -> Result<()> {
 
     let code = provider.get_code(token_addr, None).await?;
 
-    println!("code len {}", code.len());
+    let parsed_bytecode = disasm(&code);
 
-    let file_path = format!("testdata/{:?}", token_addr);
-    let mut file = File::create(file_path).await?;
-
-    file.write_all(&code).await?;
+    // Print first 50 instructions
+    for inst in parsed_bytecode.iter().take(50) {
+        println!("{inst}")
+    }
 
     Ok(())
 }

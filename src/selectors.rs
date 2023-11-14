@@ -1,5 +1,6 @@
 use crate::{disasm::disasm, opcodes::Opcode, utils};
 
+/// Selector alias as 4 raw bytes (bytes4 in Solidity)
 pub type Selector = [u8; 4];
 
 /// Returns all potential function selectors from the contract deployed bytecode as `[u8; 4]`;

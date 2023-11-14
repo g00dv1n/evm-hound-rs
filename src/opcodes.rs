@@ -857,4 +857,5 @@ impl fmt::Display for Instruction<'_> {
     }
 }
 
+/// Bytecode as parsed Instructions from raw bytes
 pub type Bytecode<'a> = Vec<Instruction<'a>>;

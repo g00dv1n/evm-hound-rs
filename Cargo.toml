@@ -1,6 +1,12 @@
 [package]
+authors = ["g00dv1n"]
+categories = ["cryptography::cryptocurrencies", "parsing"]
+description = "A Minimalistic Rust library to extract all potential function selectors from EVM bytecode without source code"
 edition = "2021"
-name = "evm-hound"
+keywords = ["ethereum", "evm", "bytecode", "function selectors", "abi"]
+license = "MIT OR Apache-2.0"
+name = "evm_hound"
+repository = "https://github.com/g00dv1n/evm-hound-rs"
 version = "0.1.0"
 
 [dev-dependencies]
