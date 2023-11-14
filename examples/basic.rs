@@ -21,6 +21,7 @@ async fn main() -> Result<()> {
     let raw_selectors = selectors_from_bytecode(&code);
     let string_selectors = string_selectors_from_bytecode(&code);
 
+    println!("found {} selectors", raw_selectors.len());
     println!("{raw_selectors:?}");
     println!("{string_selectors:?}");
 

@@ -8,10 +8,6 @@ A Minimalistic Rust library to extract all potential function selectors from EVM
 
 ## Usage
 
-Run example:
-
-`$ cargo run --example basic`
-
 ```rust
 // examples/basic.rs
 use std::str::FromStr;
@@ -34,6 +30,7 @@ async fn main() -> Result<()> {
     let raw_selectors = selectors_from_bytecode(&code);
     let string_selectors = string_selectors_from_bytecode(&code);
 
+    println!("found {} selectors", raw_selectors.len());
     println!("{raw_selectors:?}");
     println!("{string_selectors:?}");
 
