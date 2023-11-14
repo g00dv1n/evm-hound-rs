@@ -14,14 +14,13 @@ use tokio::io::AsyncWriteExt;
 #[tokio::main]
 async fn main() -> Result<()> {
     let provider = Provider::<Http>::try_from("https://eth.llamarpc.com")?;
-    let token_addr = Address::from_str("0x7ae075546e8042dC263FA0eb6519ce0a04EABB93")?;
+    let token_addr = Address::from_str("0xdac17f958d2ee523a2206206994597c13d831ec7")?;
 
     let code = provider.get_code(token_addr, None).await?;
 
     println!("code len {}", code.len());
 
-    let file_path = format!("testdata/{:?}", token_addr);
-    let mut file = File::create(file_path).await?;
+    let mut file = File::create("testdata/bytecode").await?;
 
     file.write_all(&code).await?;
 
