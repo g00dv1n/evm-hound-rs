@@ -14,7 +14,16 @@ pub fn disasm(code: &[u8]) -> Bytecode {
         let push_value_size = opcode.push_value_size();
 
         let push_value = if opcode.is_value_push() {
-            Some(&code[code_offset + 1..code_offset + 1 + push_value_size])
+            let start_i = code_offset + 1;
+
+            // handle bounds edge case
+            let end_i = if start_i + push_value_size >= code.len() {
+                code.len() - 1
+            } else {
+                start_i + push_value_size
+            };
+
+            Some(&code[start_i..end_i])
         } else {
             None
         };
