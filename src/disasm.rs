@@ -9,7 +9,7 @@ pub fn disasm(code: &[u8]) -> Bytecode {
     let mut bytecode: Bytecode = Vec::new();
 
     while code_offset < code.len() {
-        let opcode = Opcode::from_byte(code[code_offset]);
+        let opcode = Opcode::from(code[code_offset]);
 
         let push_value_size = opcode.push_value_size();
 

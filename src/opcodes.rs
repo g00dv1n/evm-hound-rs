@@ -299,9 +299,89 @@ pub enum Opcode {
 }
 
 impl Opcode {
-    /// Translates a raw byte into an Opcode
-    pub fn from_byte(b: u8) -> Self {
-        let opcode = match b {
+    /// Check if this is push with value (Push0 will be ignored)
+    pub fn is_value_push(&self) -> bool {
+        match self {
+            Opcode::Push1
+            | Opcode::Push2
+            | Opcode::Push3
+            | Opcode::Push4
+            | Opcode::Push5
+            | Opcode::Push6
+            | Opcode::Push7
+            | Opcode::Push8
+            | Opcode::Push9
+            | Opcode::Push10
+            | Opcode::Push11
+            | Opcode::Push12
+            | Opcode::Push13
+            | Opcode::Push14
+            | Opcode::Push15
+            | Opcode::Push16
+            | Opcode::Push17
+            | Opcode::Push18
+            | Opcode::Push19
+            | Opcode::Push20
+            | Opcode::Push21
+            | Opcode::Push22
+            | Opcode::Push23
+            | Opcode::Push24
+            | Opcode::Push25
+            | Opcode::Push26
+            | Opcode::Push27
+            | Opcode::Push28
+            | Opcode::Push29
+            | Opcode::Push30
+            | Opcode::Push31
+            | Opcode::Push32 => true,
+            _ => false,
+        }
+    }
+
+    /// Returns push value size
+    pub fn push_value_size(&self) -> usize {
+        match self {
+            Opcode::Push1 => 1,
+            Opcode::Push2 => 2,
+            Opcode::Push3 => 3,
+            Opcode::Push4 => 4,
+            Opcode::Push5 => 5,
+            Opcode::Push6 => 6,
+            Opcode::Push7 => 7,
+            Opcode::Push8 => 8,
+            Opcode::Push9 => 9,
+            Opcode::Push10 => 10,
+            Opcode::Push11 => 11,
+            Opcode::Push12 => 12,
+            Opcode::Push13 => 13,
+            Opcode::Push14 => 14,
+            Opcode::Push15 => 15,
+            Opcode::Push16 => 16,
+            Opcode::Push17 => 17,
+            Opcode::Push18 => 18,
+            Opcode::Push19 => 19,
+            Opcode::Push20 => 20,
+            Opcode::Push21 => 21,
+            Opcode::Push22 => 22,
+            Opcode::Push23 => 23,
+            Opcode::Push24 => 24,
+            Opcode::Push25 => 25,
+            Opcode::Push26 => 26,
+            Opcode::Push27 => 27,
+            Opcode::Push28 => 28,
+            Opcode::Push29 => 29,
+            Opcode::Push30 => 30,
+            Opcode::Push31 => 31,
+            Opcode::Push32 => 32,
+            _ => 0,
+        }
+    }
+}
+
+/// Translates a raw byte into an Opcode
+impl From<u8> for Opcode {
+    fn from(byte: u8) -> Self {
+        let opcode = match byte {
             0x00 => Opcode::Stop,
             0x01 => Opcode::Add,
             0x02 => Opcode::Mul,
@@ -449,87 +529,11 @@ impl Opcode {
         };
         opcode
     }
+}
 
-    /// Check if this is push with value (Push0 will be ignored)
-    pub fn is_value_push(&self) -> bool {
-        match self {
-            Opcode::Push1
-            | Opcode::Push2
-            | Opcode::Push3
-            | Opcode::Push4
-            | Opcode::Push5
-            | Opcode::Push6
-            | Opcode::Push7
-            | Opcode::Push8
-            | Opcode::Push9
-            | Opcode::Push10
-            | Opcode::Push11
-            | Opcode::Push12
-            | Opcode::Push13
-            | Opcode::Push14
-            | Opcode::Push15
-            | Opcode::Push16
-            | Opcode::Push17
-            | Opcode::Push18
-            | Opcode::Push19
-            | Opcode::Push20
-            | Opcode::Push21
-            | Opcode::Push22
-            | Opcode::Push23
-            | Opcode::Push24
-            | Opcode::Push25
-            | Opcode::Push26
-            | Opcode::Push27
-            | Opcode::Push28
-            | Opcode::Push29
-            | Opcode::Push30
-            | Opcode::Push31
-            | Opcode::Push32 => true,
-            _ => false,
-        }
-    }
-
-    /// Returns push value size
-    pub fn push_value_size(&self) -> usize {
-        match self {
-            Opcode::Push1 => 1,
-            Opcode::Push2 => 2,
-            Opcode::Push3 => 3,
-            Opcode::Push4 => 4,
-            Opcode::Push5 => 5,
-            Opcode::Push6 => 6,
-            Opcode::Push7 => 7,
-            Opcode::Push8 => 8,
-            Opcode::Push9 => 9,
-            Opcode::Push10 => 10,
-            Opcode::Push11 => 11,
-            Opcode::Push12 => 12,
-            Opcode::Push13 => 13,
-            Opcode::Push14 => 14,
-            Opcode::Push15 => 15,
-            Opcode::Push16 => 16,
-            Opcode::Push17 => 17,
-            Opcode::Push18 => 18,
-            Opcode::Push19 => 19,
-            Opcode::Push20 => 20,
-            Opcode::Push21 => 21,
-            Opcode::Push22 => 22,
-            Opcode::Push23 => 23,
-            Opcode::Push24 => 24,
-            Opcode::Push25 => 25,
-            Opcode::Push26 => 26,
-            Opcode::Push27 => 27,
-            Opcode::Push28 => 28,
-            Opcode::Push29 => 29,
-            Opcode::Push30 => 30,
-            Opcode::Push31 => 31,
-            Opcode::Push32 => 32,
-            _ => 0,
-        }
-    }
-
-    /// Translates an Opcode into a byte
-    pub fn byte(&self) -> u8 {
+/// Translates an Opcode into a byte
+impl Into<u8> for Opcode {
+    fn into(self) -> u8 {
         match self {
             Opcode::Stop => 0x00,
             Opcode::Add => 0x01,
@@ -678,10 +682,12 @@ impl Opcode {
             Opcode::Selfdestruct => 0xff,
         }
     }
+}
 
-    /// Translates an Opcode into opcode string
-    pub fn op_string(&self) -> String {
-        let opcode_str = match self {
+/// Translates an Opcode into opcode string
+impl ToString for Opcode {
+    fn to_string(&self) -> String {
+        match self {
             Opcode::Stop => "Stop",
             Opcode::Add => "Add",
             Opcode::Mul => "Mul",
@@ -827,8 +833,8 @@ impl Opcode {
             Opcode::Revert => "Revert",
             Opcode::Invalid => "Invalid",
             Opcode::Selfdestruct => "Selfdestruct",
-        };
-        opcode_str.to_string()
+        }
+        .to_string()
     }
 }
 /// Bytecode Instruction
@@ -845,14 +851,12 @@ pub struct Instruction<'a> {
 /// Display Instruction Opcode and Push value (if has one)
 impl fmt::Display for Instruction<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let opcode_str = self.opcode.op_string();
-
         if let Some(push_value) = self.push_value {
             let hex_push_value = utils::bytes_to_hex(push_value);
 
-            write!(f, "{} {}", opcode_str, hex_push_value)
+            write!(f, "{} {}", self.opcode.to_string(), hex_push_value)
         } else {
-            write!(f, "{}", opcode_str)
+            write!(f, "{}", self.opcode.to_string())
         }
     }
 }
