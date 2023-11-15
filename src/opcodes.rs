@@ -338,6 +338,10 @@ impl Opcode {
         }
     }
 
+    pub fn is_push4_or_le(&self) -> bool {
+        self.is_value_push() && self.push_value_size() <= 4
+    }
+
     /// Returns push value size
     pub fn push_value_size(&self) -> usize {
         match self {
