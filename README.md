@@ -10,8 +10,6 @@ A Minimalistic Rust library to extract all potential function selectors from EVM
 
 ```rust
 // examples/basic.rs
-use std::str::FromStr;
-
 use ethers::{
     providers::{Http, Middleware, Provider},
     types::Address,
@@ -20,10 +18,13 @@ use eyre::Result;
 
 use evm_hound::{selectors_from_bytecode, string_selectors_from_bytecode};
 
+// To Try:
+// cargo run --example basic
+
 #[tokio::main]
 async fn main() -> Result<()> {
     let provider = Provider::<Http>::try_from("https://rpc.flashbots.net/fast")?;
-    let token_addr = Address::from_str("0xdac17f958d2ee523a2206206994597c13d831ec7")?;
+    let token_addr: Address = "0xdac17f958d2ee523a2206206994597c13d831ec7".parse()?;
 
     let code = provider.get_code(token_addr, None).await?;
 
@@ -37,6 +38,21 @@ async fn main() -> Result<()> {
     Ok(())
 }
 ```
+
+Also, EVM Hound can detect basic contract types using extracted selectors:
+
+```rust
+pub enum ContractType {
+    /// ERC20 - Typical token contract
+    ERC20,
+    /// ERC721 - Typical NFT contract
+    ERC721,
+    /// Any other contract
+    ANY,
+}
+```
+
+Check out example at [examples/contract_type.rs](examples/contract_type.rs).
 
 ### Credits
 

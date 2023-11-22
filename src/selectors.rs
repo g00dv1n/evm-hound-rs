@@ -8,14 +8,28 @@ pub type Selector = [u8; 4];
 /// * `code` - A slice of bytes which represents contract bytecode
 ///
 /// # Examples
-/// ```ignore
+/// ```rust
+/// use ethers::{
+///     providers::{Http, Middleware, Provider},
+///     types::Address,
+/// };
+/// use eyre::Result;
+
 /// use evm_hound::selectors_from_bytecode;
-/// ...
-/// let bytecode = provider.get_code(address, None).await?;
-/// let selectors = selectors_from_bytecode(&code);
+
+/// #[tokio::main]
+/// async fn main() -> Result<()> {
+///     let provider = Provider::<Http>::try_from("https://rpc.flashbots.net/fast")?;
+///     let token_addr: Address = "0xdac17f958d2ee523a2206206994597c13d831ec7".parse()?;
 ///
-/// println!("{selectors:?}");
+///     let code = provider.get_code(token_addr, None).await?;
+///     let selectors = selectors_from_bytecode(&code);
 ///
+///     println!("found {} selectors", selectors.len());
+///     println!("{selectors:?}");
+///
+///     Ok(())
+/// }
 /// ```
 pub fn selectors_from_bytecode(code: &[u8]) -> Vec<Selector> {
     let bytecode = disasm(code);

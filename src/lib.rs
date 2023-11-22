@@ -6,17 +6,21 @@
 //! ### Use cases:
 //! Made for [Hackers.tools Trading Simulator](https://hackers.tools/) to search/bruteforce for potential methods that start trading.
 
+mod contract_types;
 mod disasm;
 mod opcodes;
 mod selectors;
 mod utils;
 
+pub use contract_types::*;
 pub use disasm::*;
 pub use opcodes::*;
 pub use selectors::*;
 
 #[cfg(test)]
 mod tests {
+    use crate::contract_types::ContractType;
+
     use super::*;
     use std::{fs::File, io::Read};
 
@@ -117,5 +121,15 @@ mod tests {
         .map(|s| String::from(s));
 
         assert_eq!(selectors, expected_selectors);
+    }
+
+    #[test]
+    fn test_contract_type_from_bytecode() {
+        let code = load_bytecode_from_file();
+
+        let selectors = selectors_from_bytecode(&code);
+        let contract_type = contract_type_from_selectors(&selectors);
+
+        assert_eq!(contract_type, ContractType::ERC20);
     }
 }
