@@ -9,7 +9,7 @@ keywords = ["ethereum", "evm", "bytecode", "selectors", "abi"]
 license = "MIT OR Apache-2.0"
 name = "evm_hound"
 repository = "https://github.com/g00dv1n/evm-hound-rs"
-version = "0.1.3"
+version = "0.1.4"
 
 [dev-dependencies]
 ethers = "2.0"
